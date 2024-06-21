@@ -1,0 +1,28 @@
+services:
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: pure-php
+        restart: unless-stopped
+        volumes:
+            - ./:/srv/app
+        networks:
+            - pure
+    
+    caddy:
+        image: caddy:2.7-alpine
+        container_name: caddy
+        depends_on:
+            - php
+        restart: unless-stopped
+        ports:
+            - "8383:80"
+        volumes:
+            - ./caddy:/etc/caddy
+        networks:
+            - pure
+
+networks:
+    pure:
+        driver: bridge
